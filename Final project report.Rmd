@@ -10,10 +10,9 @@ knitr::opts_chunk$set(echo = FALSE)
 ```
 
 ## INTRODUCTION
+
 [link for the Airbnb data](https://www.kaggle.com/datasets/PromptCloudHQ/airbnb-property-data-from-texas)
-Airbnb is an online platform that facilitates the booking and rental of lodging, primarily homes or apartments, on a short-term basis. Founded in 2008, Airbnb has grown into a global marketplace that connects people looking to rent their homes with travelers seeking unique and often more affordable accommodations than traditional hotels. The platform allows hosts to list their properties, providing details about the space, amenities, and pricing, while guests can browse listings and book accommodations for a specified period. 
-I've heard many good things about this business but have not seen a market study. Today, I decided to work with this data (Airbnb property data from Texas from 2008 to 2017). This dataset includes the average night price, number of bedrooms, location, the year listed, and description, which aligns with my interest in studying the market. At the end of our analyses, we will be able to respond to multiple questions such as how many listings is there in Texas, how Airbnb has grown in Texas from 2008 to 2017, what city is the most popular with Airbnb; what is the average per night, per year, per bedroom; what number of the bedroom is the most popular?
-Through our analysis, we will find approaches to our findings. Our data will give a visualization and give people an idea of this business.
+Founded in 2008, Airbnb is an online platform connecting hosts offering short-term lodging with travelers seeking alternatives to traditional hotels. Today, I'm analyzing Airbnb property data in Texas from 2008 to 2017, encompassing average night price, bedrooms, location, year listed, and descriptions. The analysis aims to address key questions about Texas listings, Airbnb's growth, popular cities, and average prices per night, per year, and per bedroom. The findings will be visually presented to offer insights into the Airbnb business.
 
 ## LIBRARY USED
 
@@ -32,6 +31,7 @@ glimpse(Airbnb_Texas)
 ```
 
 ## FORMATING DATA
+
 ```{r format_data}
 #removing all unecessary data
 Airbnb_Texas$description <- NULL
@@ -52,15 +52,24 @@ Airbnb_Texas$bedrooms_count[Airbnb_Texas$bedrooms_count=="Studio"] <- "1"
 Airbnb_Texas$bedrooms_count <- as.numeric(Airbnb_Texas$bedrooms_count)
 glimpse(Airbnb_Texas)
 ```
+
 ## DATA KEY TERMS
 **average_rate_per_night** cost of the room per night
+
 **bedrooms_count** number of bedroom
+
 **city** location of the airbnb
+
 **date_of_listing** date when airbnb was available on platform
+
 ## 1- Total Airbnb from 2008 to 2017
+
 From 2008 to 2017 exactly 18,259 were created in Texas.
+
 ## 2- Number of houses by year
+
 We are taking our formatted data to display the number of houses per year. This will help us determine what year had the most additional Airbnbs and if there was an increase or decrease in the number of Airbnbs added yearly.
+
 ```{r}
 ggplot(Airbnb_Texas %>% group_by(year) %>% count(), aes(year,n,fill=year,color=year)) +
    geom_col() +
@@ -68,11 +77,15 @@ ggplot(Airbnb_Texas %>% group_by(year) %>% count(), aes(year,n,fill=year,color=y
 ```
 
 ## 4- Top 10 city with most airbnb 
+
 ```{r}
 Airbnb_Texas %>% group_by(city) %>% count() %>% arrange(desc(n)) %>% kbl() %>% row_spec(1:10, background = "pink") %>% kable_paper()  %>% scroll_box(height = "300px")
 ```
 
+We can see that the top 10 cities have international airports and big companies, so the more traffic a town has, the more Airbnb there is.
+
 ## 5- Average rate per night per month 
+
 ```{r}
 # Create an ordered factor for 'month'
 order_of_months <- c("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")
@@ -87,7 +100,11 @@ ggplot(Airbnb_Texas %>%
   labs(title = "Average Rate Per Month") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 ```
+
+January has the highest average rate per night.
+
 ## 6- Average rate per night per year
+
 ```{r}
 ggplot(Airbnb_Texas %>% 
          group_by(year) %>%
@@ -97,7 +114,13 @@ ggplot(Airbnb_Texas %>%
   labs(title = "Average Rate Over Years")
 
 ```
+
+Over the years, the average rate per night grew due to increased demand and the cost of life. Rents are different from 2008 to 2017.
+
 ## 7- Number of bedrooms 
+
+One bedroom is the most popular.
+
 ```{r}
 Airbnb_Texas$bedrooms_count[Airbnb_Texas$bedrooms_count=="Studio"] <- "1"
 Airbnb_Texas$bedrooms_count <- as.numeric(Airbnb_Texas$bedrooms_count)
@@ -107,11 +130,14 @@ Airbnb_Texas$bedrooms_count <- as.numeric(Airbnb_Texas$bedrooms_count)
    labs(title = "Number of Bedrooms")
 
 ```
+
 ## 8-Average rate night per bedroom
+
 ```{r}
 Airbnb_Texas %>% 
   group_by(bedrooms_count) %>%
   summarize(mean_rate = mean(average_rate_per_night, na.rm = TRUE))
 ```
+
 ## Conclusion
 From 2008 to 2017, 18259 were listed in Texas, but massive growth started around 2011. When we look at the top 10 cities with the most listings, we realize they are the big cities of Texas with many visitors, international airports, attractions... The average rate per night has considerably grown over the years. One bedroom is the most popular listing because it's the cheapest average night. Overall, Airbnb is a trendy business in Texas, and the questions we answered should help investors direct themselves into this business.
